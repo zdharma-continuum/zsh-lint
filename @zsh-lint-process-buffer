@@ -1,3 +1,6 @@
+# -*- Mode: shell-script -*-
+# vim:ft=zsh:sw=4:sts=4:et
+
 # Copyright (c) 2019 Sebastian Gniazdowski
 # License MIT
 
@@ -137,5 +140,3 @@ ZSHLINT_PB_SPACES[i]="$buf"
 ZSHLINT_PB_ALL+=( "$buf" )
 
 return 0
-
-# vim:ft=zsh

@@ -1,3 +1,6 @@
+# -*- Mode: shell-script -*-
+# vim:ft=zsh:sw=4:sts=4:et
+
 # Copyright (c) 2019 Sebastian Gniazdowski
 # License MIT
 
