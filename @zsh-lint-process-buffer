@@ -4,10 +4,10 @@
 # $1 - text to process
 #
 # Output:
-# DECLZSH_PB_WORDS - split of "$1" into shell words; array
-# DECLZSH_PB_WORDS_BEGINNINGS - indexes of first letters of corresponding words in DECLZSH_PB_WORDS
-# DECLZSH_PB_SPACES - white spaces before corresponding words in DECLZSH_PB_WORDS
-# DECLZSH_PB_ALL - spaces and words, together
+# ZSHLINT_PB_WORDS - split of "$1" into shell words; array
+# ZSHLINT_PB_WORDS_BEGINNINGS - indexes of first letters of corresponding words in ZSHLINT_PB_WORDS
+# ZSHLINT_PB_SPACES - white spaces before corresponding words in ZSHLINT_PB_WORDS
+# ZSHLINT_PB_ALL - spaces and words, together
 #
 
 emulate -LR zsh
@@ -20,22 +20,22 @@ local buf="$1"
 local len="${#buf}"
 
 # All output variables are either overwritten or cleared
-DECLZSH_PB_WORDS=( "${(Z+cn+)buf}" )
-DECLZSH_PB_SPACES=()
-DECLZSH_PB_WORDS_BEGINNINGS=()
-DECLZSH_PB_ALL=()
+ZSHLINT_PB_WORDS=( "${(Z+cn+)buf}" )
+ZSHLINT_PB_SPACES=()
+ZSHLINT_PB_WORDS_BEGINNINGS=()
+ZSHLINT_PB_ALL=()
 
 # (Z+n+) will return 1 element for buf that is empty or only whitespace
 if [[ "$buf" = ( |$'\t')# ]]; then
-    DECLZSH_PB_WORDS=()
+    ZSHLINT_PB_WORDS=()
     integer nwords=0
 else
-    integer nwords="${#DECLZSH_PB_WORDS}"
+    integer nwords="${#ZSHLINT_PB_WORDS}"
 fi
 
 /zsh-lint-dbg "Processing #$nwords tokens"
 
-# Remove DECLZSH_PB_WORDS one by one, counting characters,
+# Remove ZSHLINT_PB_WORDS one by one, counting characters,
 # computing beginning of each word, to find
 # place to break the word into 2 halves (for
 # complete_in_word option)
@@ -49,8 +49,8 @@ for (( i=1; i<=nwords; i++ )); do
     # input is an unbound '$(' (happens with zsh < 5.1)
     # and also real spaces gathered by an unbound '$(',
     # to handle them in a way normal to this loop
-    DECLZSH_PB_WORDS[i]="${DECLZSH_PB_WORDS[i]%% ##}"
-    word="${DECLZSH_PB_WORDS[i]}"
+    ZSHLINT_PB_WORDS[i]="${ZSHLINT_PB_WORDS[i]%% ##}"
+    word="${ZSHLINT_PB_WORDS[i]}"
     wordlen="${#word}"
 
     # Remove white spaces
@@ -82,7 +82,7 @@ for (( i=1; i<=nwords; i++ )); do
                 # +2 added before this loop to fully compensate
                 # 2-characters long \$'\n'
                 word="${buf[1,start+1+bslen-1]}"
-                DECLZSH_PB_WORDS[i]="$word"
+                ZSHLINT_PB_WORDS[i]="$word"
 
                 # Start is 0-based, so -1
                 start+=found+2-1
@@ -120,20 +120,20 @@ for (( i=1; i<=nwords; i++ )); do
     # Count them
     char_count=char_count+"${#MATCH}"
     # This is the beginning of current word
-    DECLZSH_PB_WORDS_BEGINNINGS[i]=$(( char_count + 1 ))
+    ZSHLINT_PB_WORDS_BEGINNINGS[i]=$(( char_count + 1 ))
     # Remember the spaces
-    DECLZSH_PB_SPACES[i]="$MATCH"
+    ZSHLINT_PB_SPACES[i]="$MATCH"
 
     # Store full data
-    DECLZSH_PB_ALL+=( "$MATCH" "$word" )
+    ZSHLINT_PB_ALL+=( "$MATCH" "$word" )
 
     # Remove the word
     buf="${buf[wordlen+1,len]}"
 done 
 
 # What's left in $buf can be only white spaces
-DECLZSH_PB_SPACES[i]="$buf"
-DECLZSH_PB_ALL+=( "$buf" )
+ZSHLINT_PB_SPACES[i]="$buf"
+ZSHLINT_PB_ALL+=( "$buf" )
 
 return 0
 
